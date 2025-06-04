@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
       const response = await axiosInstance.get('/users/profile');
       setUser(response.data);
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.error('[Auth] Error fetching user:', error);
       logout();
     } finally {
       setLoading(false);
@@ -33,10 +33,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
+      console.log('[Auth] Attempting login with:', { email });
+      
       const response = await axiosInstance.post('/auth/login', {
         email,
         password,
       });
+
+      console.log('[Auth] Login response:', response.data);
 
       const { token, user } = response.data;
       localStorage.setItem('token', token);
@@ -44,26 +48,42 @@ export const AuthProvider = ({ children }) => {
       setUser(user);
       return { success: true };
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('[Auth] Login error:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
+      
       return {
         success: false,
-        error: error.response?.data?.message || 'An error occurred',
+        error: error.response?.data?.message || 'Invalid credentials',
       };
     }
   };
 
   const register = async (userData) => {
     try {
+      console.log('[Auth] Attempting registration:', { email: userData.email });
+      
       const response = await axiosInstance.post('/auth/register', userData);
+      
+      console.log('[Auth] Registration response:', response.data);
+      
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       setUser(user);
       return { success: true };
     } catch (error) {
+      console.error('[Auth] Registration error:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
+      
       return {
         success: false,
-        error: error.response?.data?.message || 'An error occurred',
+        error: error.response?.data?.message || 'Registration failed',
       };
     }
   };
@@ -80,9 +100,15 @@ export const AuthProvider = ({ children }) => {
       setUser(response.data.user);
       return { success: true };
     } catch (error) {
+      console.error('[Auth] Profile update error:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
+      
       return {
         success: false,
-        error: error.response?.data?.message || 'An error occurred',
+        error: error.response?.data?.message || 'Profile update failed',
       };
     }
   };

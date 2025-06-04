@@ -4,10 +4,12 @@ const isProduction = import.meta.env.PROD;
 const productionUrl = 'https://digital-e-gram-panchayat-xgvs.onrender.com';
 
 // Log environment information
-console.log('Environment Config:', {
+console.log('[Axios Config] Environment:', {
   isProduction,
   productionUrl,
-  baseURL: isProduction ? `${productionUrl}/api` : '/api'
+  baseURL: isProduction ? `${productionUrl}/api` : '/api',
+  NODE_ENV: process.env.NODE_ENV,
+  VITE_ENV: import.meta.env.MODE
 });
 
 // Create axios instance with custom config
@@ -23,12 +25,13 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     // Always log request in production and development for debugging
-    console.log('API Request:', {
+    console.log('[Axios Request]:', {
       url: config.url,
       method: config.method,
       baseURL: config.baseURL,
       fullUrl: `${config.baseURL}${config.url}`,
       headers: config.headers,
+      data: config.data,
       isProduction
     });
 
@@ -39,13 +42,21 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.error('[Axios Request Error]:', error);
     return Promise.reject(error);
   }
 );
 
 // Response interceptor
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('[Axios Response]:', {
+      status: response.status,
+      data: response.data,
+      headers: response.headers
+    });
+    return response;
+  },
   (error) => {
     // Log error details
     const errorDetails = {
@@ -56,17 +67,23 @@ axiosInstance.interceptors.response.use(
       data: error.response?.data,
       message: error.message,
       headers: error.config?.headers,
+      requestData: error.config?.data,
       isProduction
     };
     
-    console.error('API Error:', errorDetails);
+    console.error('[Axios Error]:', errorDetails);
     
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      // Only clear token and redirect if not on login/register pages
+      const currentPath = window.location.pathname;
+      if (!['/login', '/register'].includes(currentPath)) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }
 );
 
+// Export the configured instance
 export default axiosInstance; 
