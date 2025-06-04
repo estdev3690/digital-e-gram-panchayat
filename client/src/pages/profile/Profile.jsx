@@ -87,7 +87,7 @@ const Profile = () => {
     }
 
     try {
-      await axios.put('/api/users/change-password', {
+      await axios.put('/users/change-password', {
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword,
       });

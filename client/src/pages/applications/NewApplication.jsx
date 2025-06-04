@@ -62,7 +62,7 @@ const NewApplication = () => {
         formData.append('documents', file);
       });
 
-      const response = await axiosInstance.post('/api/applications', formData, {
+      const response = await axiosInstance.post('/applications', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

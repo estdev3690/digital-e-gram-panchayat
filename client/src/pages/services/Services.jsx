@@ -35,7 +35,7 @@ const Services = () => {
 
   const fetchServices = async () => {
     try {
-      const response = await axiosInstance.get('/api/services', {
+      const response = await axiosInstance.get('/services', {
         params: {
           search: searchTerm,
           category: selectedCategory,
@@ -51,7 +51,7 @@ const Services = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axiosInstance.get('/api/services/categories');
+      const response = await axiosInstance.get('/services/categories');
       setCategories(response.data);
     } catch (error) {
       console.error('Error fetching categories:', error);

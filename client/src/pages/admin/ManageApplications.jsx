@@ -64,7 +64,7 @@ const ManageApplications = () => {
 
   const fetchApplications = async () => {
     try {
-      const response = await axiosInstance.get('/api/applications');
+      const response = await axiosInstance.get('/applications');
       setApplications(response.data);
     } catch (error) {
       setError('Error fetching applications');
@@ -93,7 +93,7 @@ const ManageApplications = () => {
     setUpdating(true);
     try {
       await axiosInstance.patch(
-        `/api/applications/${selectedApplication._id}/status`,
+        `/applications/${selectedApplication._id}/status`,
         {
           status: newStatus,
           comment: comment.trim(),

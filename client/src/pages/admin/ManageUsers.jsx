@@ -45,7 +45,7 @@ const ManageUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('/api/users');
+      const response = await axios.get('/users');
       setUsers(response.data);
     } catch (error) {
       setError('Error fetching users');
@@ -68,7 +68,7 @@ const ManageUsers = () => {
 
   const handleRoleChange = async () => {
     try {
-      await axios.patch(`/api/users/${selectedUser._id}/role`, {
+      await axios.patch(`/users/${selectedUser._id}/role`, {
         role: selectedRole,
       });
       fetchUsers();
@@ -80,7 +80,7 @@ const ManageUsers = () => {
 
   const handleToggleStatus = async (userId, isActive) => {
     try {
-      await axios.patch(`/api/users/${userId}/status`, {
+      await axios.patch(`/users/${userId}/status`, {
         isActive: !isActive,
       });
       fetchUsers();

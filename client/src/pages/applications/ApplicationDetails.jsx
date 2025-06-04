@@ -37,7 +37,7 @@ const ApplicationDetails = () => {
 
   const fetchApplication = async () => {
     try {
-      const response = await axiosInstance.get(`/api/applications/${id}`);
+      const response = await axiosInstance.get(`/applications/${id}`);
       setApplication(response.data);
     } catch (error) {
       setError('Error fetching application details. Please try again later.');
