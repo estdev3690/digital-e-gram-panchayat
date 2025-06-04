@@ -54,9 +54,11 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axiosInstance.get('/api/admin/stats');
+      const response = await axiosInstance.get('/admin/stats');
       setStats(response.data);
+      setError('');
     } catch (error) {
+      console.error('Dashboard Error:', error);
       setError('Error fetching dashboard statistics');
     } finally {
       setLoading(false);
