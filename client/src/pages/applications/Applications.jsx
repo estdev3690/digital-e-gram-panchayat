@@ -17,7 +17,7 @@ import {
   Alert,
 } from '@mui/material';
 import { Visibility as VisibilityIcon } from '@mui/icons-material';
-import axios from 'axios';
+import axiosInstance from '../../config/axios';
 
 const statusColors = {
   pending: 'warning',
@@ -38,7 +38,7 @@ const Applications = () => {
 
   const fetchApplications = async () => {
     try {
-      const response = await axios.get('/api/applications/my-applications');
+      const response = await axiosInstance.get('/applications/my-applications');
       setApplications(response.data);
     } catch (error) {
       setError('Error fetching applications. Please try again later.');

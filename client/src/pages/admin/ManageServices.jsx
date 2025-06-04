@@ -26,7 +26,7 @@ import {
   Delete as DeleteIcon,
   Add as AddIcon,
 } from '@mui/icons-material';
-import axios from 'axios';
+import axiosInstance from '../../config/axios';
 
 const ManageServices = () => {
   const [services, setServices] = useState([]);
@@ -49,7 +49,7 @@ const ManageServices = () => {
 
   const fetchServices = async () => {
     try {
-      const response = await axios.get('/api/services');
+      const response = await axiosInstance.get('/services');
       setServices(response.data);
     } catch (error) {
       setError('Error fetching services');
@@ -116,9 +116,9 @@ const ManageServices = () => {
       };
 
       if (selectedService) {
-        await axios.put(`/api/services/${selectedService._id}`, data);
+        await axiosInstance.put(`/services/${selectedService._id}`, data);
       } else {
-        await axios.post('/api/services', data);
+        await axiosInstance.post('/services', data);
       }
 
       fetchServices();
@@ -134,7 +134,7 @@ const ManageServices = () => {
   const handleDelete = async (serviceId) => {
     if (window.confirm('Are you sure you want to delete this service?')) {
       try {
-        await axios.delete(`/api/services/${serviceId}`);
+        await axiosInstance.delete(`/services/${serviceId}`);
         fetchServices();
       } catch (error) {
         setError('Error deleting service');

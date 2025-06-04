@@ -38,7 +38,7 @@ const ServiceDetails = () => {
 
   const fetchService = async () => {
     try {
-      const response = await axiosInstance.get(`/api/services/${id}`);
+      const response = await axiosInstance.get(`/services/${id}`);
       setService(response.data);
     } catch (error) {
       console.error('Error fetching service:', error);
