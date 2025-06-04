@@ -1,13 +1,11 @@
 import axios from 'axios';
 
-const isProduction = process.env.VITE_ENV === 'production';
-const baseURL = isProduction 
-  ? 'https://digital-e-gram-panchayat-xgvs.onrender.com'
-  : '';
+const isProduction = import.meta.env.PROD;
+const productionUrl = 'https://digital-e-gram-panchayat-xgvs.onrender.com';
 
 // Create axios instance with custom config
 const axiosInstance = axios.create({
-  baseURL,
+  baseURL: isProduction ? `${productionUrl}/api` : '/api',
   timeout: 30000, // Increased timeout to 30 seconds for file uploads
   headers: {
     'Content-Type': 'application/json',
@@ -17,23 +15,24 @@ const axiosInstance = axios.create({
 // Request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Add /api prefix to all requests except for full URLs
-    if (!config.url.startsWith('http')) {
-      config.url = `/api${config.url.startsWith('/') ? config.url : `/${config.url}`}`;
+    // Remove any duplicate /api prefixes
+    if (config.url?.startsWith('/api/')) {
+      config.url = config.url.replace('/api/', '/');
     }
     
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
     // Log request in development
     if (!isProduction) {
       console.log('API Request:', {
         url: config.url,
         method: config.method,
-        baseURL: config.baseURL
+        baseURL: config.baseURL,
+        fullUrl: `${config.baseURL}${config.url}`
       });
+    }
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
     return config;
@@ -50,6 +49,8 @@ axiosInstance.interceptors.response.use(
     // Log error details
     console.error('API Error:', {
       url: error.config?.url,
+      baseURL: error.config?.baseURL,
+      fullUrl: error.config ? `${error.config.baseURL}${error.config.url}` : null,
       status: error.response?.status,
       data: error.response?.data,
       message: error.message
