@@ -24,11 +24,15 @@ export default defineConfig({
         manualChunks: undefined,
       },
     },
+    sourcemap: true
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@assets': path.resolve(__dirname, './public/assets'),
     },
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
   }
 }); 
