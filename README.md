@@ -2,6 +2,25 @@
 
 A modern web application for digitizing Gram Panchayat services, built with the MERN stack (MongoDB, Express.js, React.js, Node.js).
 
+## Screenshots
+
+### User Interface
+![Home Page](/client/public/assets/screenshot01.png)
+*Home Page - Main interface of the Digital E-Gram Panchayat*
+
+![Services Page](/client/public/assets/screenshot02.png)
+*Services Page - Available Gram Panchayat services*
+
+![Application Form](/client/public/assets/screenshot03.png)
+*Application Form - User-friendly service application process*
+
+### Admin Dashboard
+![Admin Dashboard](/client/public/assets/screenshot04.png)
+*Admin Dashboard - Comprehensive overview for administrators*
+
+![Application Management](/client/public/assets/screenshot05.png)
+*Application Management - Process and track service applications*
+
 ## Features
 
 ### For Citizens
