@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const isProduction = process.env.VITE_ENV === 'production';
 const baseURL = isProduction 
-  ? 'https://digital-e-gram-panchayat-xgvs.onrender.com/api'
-  : '/api';
+  ? 'https://digital-e-gram-panchayat-xgvs.onrender.com'  // Removed /api since we'll add it in routes
+  : '';  // Empty string for development to use the proxy
 
 // Create axios instance with custom config
 const axiosInstance = axios.create({
@@ -14,9 +14,14 @@ const axiosInstance = axios.create({
   },
 });
 
-// Add a request interceptor to include the auth token
+// Request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
+    // Add /api prefix to all requests except for full URLs
+    if (!config.url.startsWith('http')) {
+      config.url = `/api${config.url.startsWith('/') ? config.url : `/${config.url}`}`;
+    }
+    
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -32,6 +37,8 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('API Error:', error.response?.data || error.message);
+    
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login';
