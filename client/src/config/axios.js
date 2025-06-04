@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const isProduction = process.env.VITE_ENV === 'production';
 const baseURL = isProduction 
-  ? 'https://digital-e-gram-panchayat-xgvs.onrender.com'  // Removed /api since we'll add it in routes
-  : '';  // Empty string for development to use the proxy
+  ? 'https://digital-e-gram-panchayat-xgvs.onrender.com'
+  : '';
 
 // Create axios instance with custom config
 const axiosInstance = axios.create({
@@ -26,6 +26,16 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Log request in development
+    if (!isProduction) {
+      console.log('API Request:', {
+        url: config.url,
+        method: config.method,
+        baseURL: config.baseURL
+      });
+    }
+
     return config;
   },
   (error) => {
@@ -37,7 +47,13 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API Error:', error.response?.data || error.message);
+    // Log error details
+    console.error('API Error:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
     
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
