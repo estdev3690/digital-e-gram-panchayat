@@ -29,7 +29,7 @@ import {
   Block as BlockIcon,
   CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
-import axios from 'axios';
+import axiosInstance from '../../config/axios';
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
@@ -45,7 +45,7 @@ const ManageUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('/users');
+      const response = await axiosInstance.get('/users');
       setUsers(response.data);
     } catch (error) {
       setError('Error fetching users');
@@ -68,7 +68,7 @@ const ManageUsers = () => {
 
   const handleRoleChange = async () => {
     try {
-      await axios.patch(`/users/${selectedUser._id}/role`, {
+      await axiosInstance.patch(`/users/${selectedUser._id}/role`, {
         role: selectedRole,
       });
       fetchUsers();
@@ -80,7 +80,7 @@ const ManageUsers = () => {
 
   const handleToggleStatus = async (userId, isActive) => {
     try {
-      await axios.patch(`/users/${userId}/status`, {
+      await axiosInstance.patch(`/users/${userId}/status`, {
         isActive: !isActive,
       });
       fetchUsers();
