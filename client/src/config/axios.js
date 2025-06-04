@@ -1,8 +1,13 @@
 import axios from 'axios';
 
+const isProduction = process.env.VITE_ENV === 'production';
+const baseURL = isProduction 
+  ? 'https://digital-e-gram-panchayat-xgvs.onrender.com/api'
+  : '/api';
+
 // Create axios instance with custom config
-const instance = axios.create({
-  baseURL: 'http://localhost:5000', // Update this with your backend server port
+const axiosInstance = axios.create({
+  baseURL,
   timeout: 30000, // Increased timeout to 30 seconds for file uploads
   headers: {
     'Content-Type': 'application/json',
@@ -10,7 +15,7 @@ const instance = axios.create({
 });
 
 // Add a request interceptor to include the auth token
-instance.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -23,4 +28,16 @@ instance.interceptors.request.use(
   }
 );
 
-export default instance; 
+// Response interceptor
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default axiosInstance; 
